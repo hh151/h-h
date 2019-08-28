@@ -1,0 +1,8 @@
+*** Variables ***
+${pic1}           D:\\HH\\Media\\PIC\\other\\1.jpg
+${picbody}        http://192.168.0.228/img/PIC/body/body1.jpg
+${picface}        http://192.168.0.228/img/PIC/face/data1.jpg
+${picdriver}      http://192.168.0.228/img/PIC/driver/2.jpg
+${piccar}         http://192.168.0.228/img/PIC/car/1.jpg
+${picall}         http://192.168.0.228/img/PIC/other/1.jpg
+${picu2vd}        /ftp/imagesearch/2019/6/20/201906201546190010413344.jpg

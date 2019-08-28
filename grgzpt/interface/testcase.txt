@@ -1,0 +1,252 @@
+*** Settings ***
+Suite Teardown
+Library           ../hhtest.py
+Library           Collections
+Library           DateTime
+Resource          ../RES/res.txt
+Library           Selenium2Library
+Library           HttpLibrary
+Library           HttpLibrary.HTTP
+Library           requests
+Library           json
+Library           String
+Resource          ../RES/media.txt
+
+*** Test Cases ***
+login
+    ${header}    hhgethead    ${ip}    ${ipport}
+    log    ${header}
+    Set Global Variable    ${header}
+
+查询所有案件
+    ${req}    queryCasesByPolygon    ${ip}    ${header}
+    log    ${req}
+    Run Keyword If    ${req}==-1    fail
+    sleep    1
+
+根据时间查询机动车数量
+    ${reqtext}    queryMotorVehiclesByHour    ${ip}    ${header}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+根据时间查询非机动车数量
+    ${reqtext}    queryNonMotorVehiclesByHour    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+根据时间查询人脸和人形数量
+    ${reqtext}    queryFacesPersonsByHour    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询当前时间机动车数量
+    ${reqtext}    queryMotorVehiclesNow    ${ip}    ${header}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询当前时间非机动车数量
+    ${reqtext}    queryNonMotorVehiclesNow    ${ip}    ${header}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询当前时间人脸人形数量
+    ${reqtext}    queryFacesPersonsNow    ${ip}    ${header}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取人形数量
+    ${reqtext}    getDataLiveVideoPerson    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取人脸数量
+    ${reqtext}    getDataLiveVideoFace    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取机动车数量
+    ${reqtext}    getDataLiveVideoMotor    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取非机动车数量
+    ${reqtext}    getDataLiveVideoNonMotor    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取案件数量
+    ${reqtext}    getDataLiveLawcase    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取当前分析任务
+    ${reqtext}    queryTasksByPolygon    ${ip}    ${header}
+    ${cameraFileId}    Get Json Value    ${reqtext}    /taskData/0/cameraFileId
+    ${serialNumber}    Get Json Value    ${reqtext}    /taskData/0/serialNumber
+    ${cameraFileId}    loads    ${cameraFileId}
+    ${serialNumber}    loads    ${serialNumber}
+    Set Global Variable    ${cameraFileId}
+    Set Global Variable    ${serialNumber}
+    Run Keyword If    ${cameraFileId} ==-1    fail
+    sleep    1
+
+获取当前分析点位图片
+    ${reqtext}    queryResultsByPage    ${ip}    ${header}    ${cameraFileId}    ${serialNumber}
+    ${reqtext}    dumps    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询点位
+    ${reqtext}    queryPoints    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+通过CAMERAid获取信息
+    ${reqtext}    getCameraByAddress    ${ip}    ${header}    ${cameraid}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询临时线索库
+    ${reqtext}    queryTmpClueByUser    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取案件库的案件
+    ${reqtext}    queryPoliceHomeDataByPage    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+获取分析数据
+    ${reqtext}    getAnalysisInitData    ${ip}    ${header}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+语义搜人形结果图片
+    ${reqtext}    querySemanticTop    ${ip}    ${header}    person
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+语义搜人形分组图片
+    ${reqtext}    querySemanticGroupData    ${ip}    ${header}    person
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+语义搜机动车结果图片
+    ${reqtext}    querySemanticTop    ${ip}    ${header}    car
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+语义搜机动车分组图片
+    ${reqtext}    querySemanticGroupData    ${ip}    ${header}    car
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+语义搜非机动车结果图片
+    ${reqtext}    querySemanticTop    ${ip}    ${header}    bike
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+语义搜机非动车分组图片
+    ${reqtext}    querySemanticGroupData    ${ip}    ${header}    bike
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+创建人形以图搜图任务
+    ${reqtext}    addImageSearchTask    ${ip}    ${header}    1    ${picbody}
+    log    ${reqtext}
+    ${serialNumberid}    Set Variable    ${reqtext}
+    ${serialNumberid}    loads    ${serialNumberid}
+    Set Global Variable    ${serialNumberid}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询人形以图搜图结果
+    Run Keyword If    ${serialNumberid}==-1    fail
+    ${reqtext}    queryImageSearchTop    ${ip}    ${header}    ${serialNumberid}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+创建人脸以图搜图任务
+    ${reqtext}    addImageSearchTask    ${ip}    ${header}    3    ${picface}
+    log    ${reqtext}
+    ${serialNumberid}    Set Variable    ${reqtext}
+    ${serialNumberid}    loads    ${serialNumberid}
+    Set Global Variable    ${serialNumberid}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询人脸以图搜图结果
+    Run Keyword If    ${serialNumberid}==-1    fail
+    ${reqtext}    queryImageSearchTop    ${ip}    ${header}    ${serialNumberid}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+创建机动车以图搜图任务
+    ${reqtext}    addImageSearchTask    ${ip}    ${header}    2    ${piccar}
+    log    ${reqtext}
+    ${serialNumberid}    Set Variable    ${reqtext}
+    ${serialNumberid}    loads    ${serialNumberid}
+    Set Global Variable    ${serialNumberid}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询机动车以图搜图结果
+    Run Keyword If    ${serialNumberid}==-1    fail
+    ${reqtext}    queryImageSearchTop    ${ip}    ${header}    ${serialNumberid}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+创建非机动车以图搜图任务
+    ${reqtext}    addImageSearchTask    ${ip}    ${header}    4    ${picdriver}
+    log    ${reqtext}
+    ${serialNumberid}    Set Variable    ${reqtext}
+    ${serialNumberid}    loads    ${serialNumberid}
+    Set Global Variable    ${serialNumberid}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+查询非机动车以图搜图结果
+    Run Keyword If    ${serialNumberid}==-1    fail
+    ${reqtext}    queryImageSearchTop    ${ip}    ${header}    ${serialNumberid}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+图片结构化
+    ${reqtext}    getImageDetails    ${ip}    ${header}    ${pic1}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+图片自动框选
+    ${reqtext}    structPicture1    ${ip}    ${header}    ${picbody}
+    log    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
+
+图片手工框选
+    ${reqtext}    editImageByXYWH    ${ip}    ${header}    ${picu2vd}
+    ${reqtext}    dumps    ${reqtext}
+    Run Keyword If    ${reqtext}==-1    fail
+    sleep    1
